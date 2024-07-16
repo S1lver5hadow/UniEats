@@ -1,0 +1,26 @@
+run-tests:
+  stage: test
+  image: docker.io/kyo1928/drp-tester
+  script:
+    - npm install
+    - npm run lint
+    - npm run test
+
+compile-android-apk:
+  stage: deploy
+  image: docker.io/kyo1928/drp-apk-compiler:latest
+  script:
+    - npm install
+    - npx expo prebuild --platform android
+    - cd android
+    - ./gradlew assembleRelease
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'
+  tags:
+    - shared
+  artifacts:
+    when: always
+    paths:
+      - android/app/build/outputs/apk/*
+
+

@@ -1,0 +1,23 @@
+image: docker.io/uselagoon/python-3.12:latest
+
+run-tests:
+  stage: test
+  script:
+    - python3 -m venv env
+    - source env/bin/activate
+    - pip install -r requirements.txt
+    - python -m compileall .
+    - python manage.py test testapp.tests
+
+deploy_to_heroku:
+  stage: deploy
+  script:
+    - apk update
+    - apk add git
+    - apk add curl
+    - apk add ruby
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'master'
+

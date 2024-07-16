@@ -1,0 +1,1 @@
+export const BACKEND_URL = 'https://unieats-backend-6e96272b270e.herokuapp.com';
